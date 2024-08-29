@@ -13,6 +13,17 @@ opcodes = {
     "HLT": "1111"
 }
 
+# convert file into a string
+def readFile(filename):
+    with open(filename, 'r') as f:
+        assembly = f.read()
+    return assembly
+
+# write binary back into a file
+def writeFile(filename, machineCode):
+    with open(filename, 'w') as f:
+        f.write(str(machineCode))
+
 # First pass: Collect labels
 def pass1(assembly_code):
     labels = {}
@@ -48,9 +59,10 @@ def pass2(assembly_code, labels):
                     operand = format(labels[operand], '08b')  # 8-bit address
                 else:
                     operand = format(int(operand), '08b')  # Immediate value
-                binary_code.append(opcode + operand)
+                # Generate output with comma-separated bytes
+                binary_code.append(f"{opcode},{operand}")
             else:
-                binary_code.append(opcode + "00000000")  # No operand
+                binary_code.append(f"{opcode},00000000")  # No operand
     return binary_code
 
 # Example usage
@@ -63,9 +75,14 @@ JMP start
 HLT
 """
 
-labels = pass1(assembly_code)
-binary_code = pass2(assembly_code, labels)
+assembly = readFile('test.asm')
+labels = pass1(assembly)
+binary_code = pass2(assembly, labels)
+writeFile('test.txt', binary_code)
 
-print("\n".join(binary_code))
+# Print the output with comma-separated bytes
+for line in binary_code:
+    print(line)
 
-
+if __name__ == '__main__':
+    pass
