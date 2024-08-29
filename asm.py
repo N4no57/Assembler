@@ -21,8 +21,11 @@ def readFile(filename):
 
 # write binary back into a file
 def writeFile(filename, machineCode):
+    outputCode = ""
+    for line in binary_code:
+        code += line + '\n'
     with open(filename, 'w') as f:
-        f.write(str(machineCode))
+        f.write(str(outputCode))
 
 # First pass: Collect labels
 def pass1(assembly_code):
@@ -60,9 +63,9 @@ def pass2(assembly_code, labels):
                 else:
                     operand = format(int(operand), '08b')  # Immediate value
                 # Generate output with comma-separated bytes
-                binary_code.append(f"{opcode},{operand}")
+                binary_code.append(f"{opcode}, {operand}")
             else:
-                binary_code.append(f"{opcode},00000000")  # No operand
+                binary_code.append(f"{opcode}, 00000000")  # No operand
     return binary_code
 
 # Example usage
